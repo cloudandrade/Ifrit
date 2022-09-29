@@ -1,0 +1,14 @@
+### Register new player
+POST http://localhost:8080/player HTTP/1.1
+content-type: application/json
+
+{
+    "username": "xXaffsXx",
+    "email": "cloud.andrade16@gmail.com",
+    "nome": "Jan Cloude",
+    "idade": 29,
+    "senha": "14asdzm"
+}
+
+### Check Application
+GET http://localhost:8080/ HTTP/1.1
