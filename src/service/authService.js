@@ -2,6 +2,11 @@ const jwt = require('jsonwebtoken');
 const { PERFIL } = require('../utils/constantHelper');
 
 const checkAuthorization = async (req, res, next) => {
+
+
+  console.log('headers')
+  console.log(req.headers.authorization)
+
   const { authorization } = req.headers;
   if (!authorization) {
     return res.status(401).json({
@@ -29,6 +34,7 @@ const checkAuthorization = async (req, res, next) => {
 
     req.key = verification.key;
   } catch (err) {
+    console.log(err)
     return res.status(401).json({
       error: 401,
       data: {
@@ -40,7 +46,7 @@ const checkAuthorization = async (req, res, next) => {
   return next();
 };
 
-const checkAdminAuthorization = async (req, res, next) => {
+/* const checkAdminAuthorization = async (req, res, next) => {
   const { authorization } = req.headers;
   if (!authorization) {
     return res.status(401).json({
@@ -68,13 +74,13 @@ const checkAdminAuthorization = async (req, res, next) => {
   }
 
   return next();
-};
+}; */
 
 const generateToken = async (player) => {
   let token = null;
   if (player.GM === false) {
     token = await jwt.sign(
-      { id: player._id, perfil: player.GM },
+      { id: player._id, GM: player.GM },
       process.env.JWT_SECRET,
       {
         expiresIn: 172800, // expires in 48 hours
@@ -82,7 +88,7 @@ const generateToken = async (player) => {
     );
   } else {
     token = await jwt.sign(
-      { id: player._id, perfil: player.GM },
+      { id: player._id, GM: player.GM },
       process.env.JWT_SECRET_ADMIN,
       {
         expiresIn: 172800, // expires in 48 hours
@@ -90,11 +96,12 @@ const generateToken = async (player) => {
     );
   }
 
+  token = `bearer ${token}`
   return token;
 };
 
 module.exports = {
   checkAuthorization,
   generateToken,
-  checkAdminAuthorization,
+ /*  checkAdminAuthorization, */
 };

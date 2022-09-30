@@ -4,8 +4,7 @@ const mongoose = require('mongoose');
 const userController = require('./controllers/userController');
 
 const {
-	checkAuthorization,
-	checkAdminAuthorization,
+	checkAuthorization
   } = require('./service/authService');
 
 router.get('/', async (req, res) => {

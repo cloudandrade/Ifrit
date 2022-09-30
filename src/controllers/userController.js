@@ -5,6 +5,7 @@ const jwt = require('jsonwebtoken');
 require('../models/Usuario');
 const Usuario = mongoose.model('usuarios');
 const logger = require('../config/loggerConfig')
+const {generateToken} = require('../service/authService')
 
 exports.createUser = async (req, res) => {
 	logger.info(`Criando novo usuario - ${req.body.username}`);
@@ -56,29 +57,17 @@ exports.getUserDetails = async (req, res) => {
 		});
 };
 
-/* exports.deleteUser = async (req, res) => {
-	logger.info(` Excluindo usuários`);
-	Usuario.deleteOne({ _id: req.params.id }, function (err) {
-		if (err) {
-			logger.error(`Admin - Falha ao excluir administrador! :: `.bgRed + err);
-			res.status(500).send('Falha ao excluir usuário');
-		} else {
-			res.status(200).send('Excluído com sucesso');
-		}
-	});
-}; */
-
 exports.login = async (req, res) => {
 	logger.info(`Autenticando usuario`);
 	let token = null
 	Usuario.findOne({
 		email: req.body.login,
 	})
-		.then((usuario) => {
+		.then(async (usuario) => {
 			if (!usuario) {
 				Usuario.findOne({
 					username: req.body.login,
-				}).then((player) => {
+				}).then(async (player) => {
 					if (!player) {
 						return res.status(404).send('Falha de Login, email ou username não encontrado');
 					} else {
@@ -93,9 +82,7 @@ exports.login = async (req, res) => {
 						}
 
 
-						let token = jwt.sign({ id: player._id }, process.env.JWT_SECRET || 'geek', {
-							expiresIn: 17800 // expires in 24 hours
-						});
+						let token = await generateToken(player)
 						res.status(200).send({
 							auth: true,
 							accessToken: token,
@@ -106,8 +93,6 @@ exports.login = async (req, res) => {
 							},
 						});
 					}
-
-
 				})
 			} else {
 				let passwordIsValid = bcrypt.compareSync(req.body.senha, usuario.senha);
@@ -120,9 +105,7 @@ exports.login = async (req, res) => {
 				}
 
 
-				token = jwt.sign({ id: usuario.id }, process.env.JWT_SECRET || 'geek', {
-					expiresIn: 17800 // expires in 24 hours
-				});
+				token = await generateToken(usuario)
 
 				res.status(200).send({
 					auth: true,
