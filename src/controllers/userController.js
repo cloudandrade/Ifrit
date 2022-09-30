@@ -48,11 +48,9 @@ exports.createUser = async (req, res) => {
 
 exports.getUserDetails = async (req, res) => {
 	logger.info(` Buscando usuário por id`);
-	Usuario.find({ _id: req.params.id })
+	Usuario.find({ _id: req.params.id }).select('_id nome GM username email')
 		.then((lista) => {
-			console.log(lista);
 			let item = lista[0];
-
 			res.json(item);
 		});
 };

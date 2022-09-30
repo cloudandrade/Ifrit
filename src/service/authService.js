@@ -3,10 +3,6 @@ const { PERFIL } = require('../utils/constantHelper');
 
 const checkAuthorization = async (req, res, next) => {
 
-
-  console.log('headers')
-  console.log(req.headers.authorization)
-
   const { authorization } = req.headers;
   if (!authorization) {
     return res.status(401).json({
@@ -20,8 +16,7 @@ const checkAuthorization = async (req, res, next) => {
   const [bearer, token] = authorization.split(' ');
   try {
     const decodeToken = await jwt.decode(token);
-    console.log('token decodificado');
-    console.log(decodeToken);
+
     let verification = null;
     if (decodeToken.GM === false) {
       verification = await jwt.verify(token, process.env.JWT_SECRET);
