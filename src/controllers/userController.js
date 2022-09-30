@@ -83,7 +83,7 @@ exports.login = async (req, res) => {
 						return res.status(404).send('Falha de Login, email ou username não encontrado');
 					} else {
 
-						let passwordIsValid = bcrypt.compareSync(req.body.senha, usuario.senha);
+						let passwordIsValid = bcrypt.compareSync(req.body.senha, player.senha);
 						if (!passwordIsValid) {
 							return res.status(401).send({
 								auth: false,
@@ -134,10 +134,10 @@ exports.login = async (req, res) => {
 					},
 				});
 			}
-			
+
 		})
 		.catch((err) => {
 			logger.error(err);
 			res.status(500).send('Internal Server Error ' + err);
 		});
-}; 
+};
