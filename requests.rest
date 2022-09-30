@@ -1,5 +1,5 @@
 ### Register new player
-POST http://localhost:8080/player HTTP/1.1
+POST http://localhost:8080/player/register HTTP/1.1
 content-type: application/json
 
 {
@@ -10,5 +10,18 @@ content-type: application/json
     "senha": "14asdzm"
 }
 
+###  Player login
+POST http://localhost:8080/player/login HTTP/1.1
+content-type: application/json
+
+{
+    "login": "cloud.andrade16@gmail.com",
+    "senha": "14asdzm"
+}
+
 ### Check Application
 GET http://localhost:8080/ HTTP/1.1
+
+### Get player info by id
+GET http://localhost:8080/player/6334ef3a63f0ae9756184655 HTTP/1.1
+Authorization: 

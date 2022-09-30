@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
-//const jwt = require('jsonwebtoken');
+const jwt = require('jsonwebtoken');
 
 require('../models/Usuario');
 const Usuario = mongoose.model('usuarios');
@@ -16,18 +16,18 @@ exports.createUser = async (req, res) => {
 		res.status(400).send('O campo email é obrigatório!');
 	} else if (!req.body.senha) {
 		res.status(400).send('O campo senha é obrigatório!');
-	} 
-    else if (!req.body.nome) {
+	}
+	else if (!req.body.nome) {
 		res.status(400).send('O campo nome é obrigatório!');
-	} 
-    else if (!req.body.idade) {
+	}
+	else if (!req.body.idade) {
 		res.status(400).send('O campo idade é obrigatório!');
-	} 
+	}
 
 	const novoUser = {
 		GM: false,
-        nome: req.body.nome,
-        idade: req.body.idade,
+		nome: req.body.nome,
+		idade: req.body.idade,
 		username: req.body.username,
 		email: req.body.email,
 		senha: bcrypt.hashSync(req.body.senha, 8),
@@ -45,29 +45,17 @@ exports.createUser = async (req, res) => {
 		});
 };
 
-/* exports.getUserDetails = async (req, res) => {
+exports.getUserDetails = async (req, res) => {
 	logger.info(` Buscando usuário por id`);
 	Usuario.find({ _id: req.params.id })
-		.populate({ path: 'perfil', select: 'tipo' })
 		.then((lista) => {
 			console.log(lista);
 			let item = lista[0];
-			let newLista = {
-				id: item._id,
-				nome: item.nome,
-				email: item.email,
-				perfil: item.perfil.tipo,
-				endereco: item.endereco,
-				numero: item.numero,
-				bairro: item.bairro,
-				cep: item.cep,
-				telefone: item.telefone,
-			};
 
-			res.json(newLista);
+			res.json(item);
 		});
 };
- */
+
 /* exports.deleteUser = async (req, res) => {
 	logger.info(` Excluindo usuários`);
 	Usuario.deleteOne({ _id: req.params.id }, function (err) {
@@ -80,44 +68,76 @@ exports.createUser = async (req, res) => {
 	});
 }; */
 
-/* exports.auth = async (req, res) => {
+exports.login = async (req, res) => {
 	logger.info(`Autenticando usuario`);
-
+	let token = null
 	Usuario.findOne({
-		email: req.body.email,
+		email: req.body.login,
 	})
-		.populate({ path: 'perfil', select: 'tipo' })
 		.then((usuario) => {
 			if (!usuario) {
-				return res.status(404).send('Falha de Login, email não encontrado');
-			}
+				Usuario.findOne({
+					username: req.body.login,
+				}).then((player) => {
+					if (!player) {
+						return res.status(404).send('Falha de Login, email ou username não encontrado');
+					} else {
 
-			let passwordIsValid = bcrypt.compareSync(req.body.senha, usuario.senha);
-			if (!passwordIsValid) {
-				return res.status(401).send({
-					auth: false,
-					accessToken: null,
-					reason: 'Senha Invalida!',
+						let passwordIsValid = bcrypt.compareSync(req.body.senha, usuario.senha);
+						if (!passwordIsValid) {
+							return res.status(401).send({
+								auth: false,
+								accessToken: null,
+								reason: 'Senha Invalida!',
+							});
+						}
+
+
+						let token = jwt.sign({ id: player._id }, process.env.JWT_SECRET || 'geek', {
+							expiresIn: 17800 // expires in 24 hours
+						});
+						res.status(200).send({
+							auth: true,
+							accessToken: token,
+							payload: {
+								id: player._id,
+								nome: player.nome,
+								email: player.email,
+							},
+						});
+					}
+
+
+				})
+			} else {
+				let passwordIsValid = bcrypt.compareSync(req.body.senha, usuario.senha);
+				if (!passwordIsValid) {
+					return res.status(401).send({
+						auth: false,
+						accessToken: null,
+						reason: 'Senha Invalida!',
+					});
+				}
+
+
+				token = jwt.sign({ id: usuario.id }, process.env.JWT_SECRET || 'geek', {
+					expiresIn: 17800 // expires in 24 hours
+				});
+
+				res.status(200).send({
+					auth: true,
+					accessToken: token,
+					payload: {
+						id: usuario._id,
+						nome: usuario.nome,
+						email: usuario.email,
+					},
 				});
 			}
-
-			let token = jwt.sign({ id: usuario.id }, process.env.JWT_SECRET || 'geek', {
-				expiresIn: 86400, // expires in 24 hours
-			});
-
-			res.status(200).send({
-				auth: true,
-				accessToken: token,
-				payload: {
-					id: usuario._id,
-					perfil: usuario.perfil.tipo,
-					nome: usuario.nome,
-					email: usuario.email,
-				},
-			});
+			
 		})
 		.catch((err) => {
 			logger.error(err);
 			res.status(500).send('Internal Server Error ' + err);
 		});
-}; */
+}; 
