@@ -3,6 +3,7 @@ const bodyParser = require('body-parser');
 require('dotenv').config();
 
 const mongoose = require('mongoose');
+const { ServerApiVersion } = require('mongodb');
 const cors = require('cors');
 
 const logger =  require('./src/config/loggerConfig');
@@ -34,25 +35,9 @@ app.use(cors());
 //ROUTES
 app.use('/', require('./src/routes'));
 
-//MONGO ONLINE
-/* const db = require('./src/config/keys').MongoURI;
-mongoose
-	.connect(db, {
-		useNewUrlParser: true,
-		useCreateIndex: true,
-		useUnifiedTopology: true,
-	})
-	.then(() => {
-		logger.info(`. . . AtlasDb Connected . . .`.bgGreen);
-	})
-	.catch((err) => {
-		logger.error(`Falha ao Conectar ao banco online Atlas: `.bgRed + err);
-
-		console.log(err);
-	});
- */
-//MONGO LOCAL
-mongoose.Promise = global.Promise;
+if(process.env.STAGE === 'local'){
+	//MONGO LOCAL
+	mongoose.Promise = global.Promise;
 mongoose
 	.connect(`mongodb://${process.env.DB_HOST}/${process.env.DB_NAME}`, { useNewUrlParser: true })
 	.then(() => {
@@ -60,10 +45,26 @@ mongoose
 	})
 	.catch((erro) => {
 		logger.error('DB Connection Error: Houve um problema ao se conectar ao banco de dados, erro: ' + erro);
-	}); 
+	});
+} else {
+	//MONGO ONLINE
+const db = require('./src/config/dbKeys').MongoURI;
+mongoose
+	.connect(db, {
+		useNewUrlParser: true, useUnifiedTopology: true, serverApi: ServerApiVersion.v1
+	})
+	.then(() => {
+		logger.info(`. . . AtlasDb Connected . . .`.bgGreen);
+	})
+	.catch((err) => {
+		logger.error(`Falha ao Conectar ao banco online Atlas: `.bgRed + err);
+		console.log(err);
+	});
+
+}
 
 //SERVER
 app.listen(
-	process.env.port || PORT,
+	PORT,
 	logger.info(`Servidor Iniciado em: ${process.env.API_HOST}:${PORT}`.bgBlue)
 );
