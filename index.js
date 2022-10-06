@@ -24,7 +24,7 @@ logger.debug('## End Checking Environment Variables ##');
 const app = express();
 
 //SERVER PORT
-const PORT = process.env.API_PORT || 5000;
+const PORT = process.env.PORT || 5000;
 
 //BODY PARSER
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -65,6 +65,6 @@ mongoose
 
 //SERVER
 app.listen(
-	PORT,
-	logger.info(`Servidor Iniciado em: ${process.env.API_HOST}:${PORT}`.bgBlue)
+	process.env.PORT || PORT,
+	logger.info(`Servidor Iniciado em: ${process.env.HOST}:${process.env.PORT}`.bgBlue)
 );
