@@ -2,6 +2,7 @@ const express = require('express');
 require('dotenv').config();
 const cors = require('cors');
 const logger = require('./src/config/loggerConfig');
+const dbInit = require('./src/config/database');
 
 logger.debug('## Start Checking Environment Variables ##');
 logger.debug('API_PORT: ' + process.env.API_PORT);
@@ -11,6 +12,9 @@ logger.debug('## End Checking Environment Variables ##');
 
 //EXPRESS
 const app = express();
+
+//Database inicialization
+dbInit;
 
 //SERVER PORT
 const PORT = process.env.API_PORT || 5000;
