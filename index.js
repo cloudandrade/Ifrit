@@ -1,8 +1,10 @@
 const express = require('express');
+var bodyParser = require('body-parser')
 require('dotenv').config();
 const cors = require('cors');
 const logger = require('./src/config/loggerConfig');
 const dbInit = require('./src/config/database');
+const routes = require('./src/routes');
 
 logger.debug('## Start Checking Environment Variables ##');
 logger.debug('API_PORT: ' + process.env.API_PORT);
@@ -23,7 +25,9 @@ const HOST = process.env.API_HOST || 'localhost';
 
 app.use(cors());
 
-app.get('/', (req, res) => res.send('server get requisition'));
+// parse application/json
+app.use(bodyParser.json())
+app.use(routes);
 
 //SERVER
 app.listen(PORT, logger.info(`Servidor Iniciado em: ${HOST}:${PORT}`.bgBlue));
