@@ -10,6 +10,7 @@ const dbhost = process.env.DB_HOST;
 const sequelize = new Sequelize(dbname, dbuser, dbpass, {
 	host: dbhost,
 	dialect: 'mysql',
+	raw: true
 });
 
 sequelize
