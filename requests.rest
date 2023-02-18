@@ -9,3 +9,7 @@ content-type: application/json
     "email": "andrade@gmail.com",
     "cpf": "85795567590"
 }
+
+### Obter Lista de Produtos paginada
+GET http://localhost:8000/produtos?page=0&size=5&search=1 HTTP/1.1
+content-type: application/json

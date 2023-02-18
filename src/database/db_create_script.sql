@@ -1,3 +1,4 @@
+
 CREATE TABLE `Pedidos` (
 	`id` INT NOT NULL AUTO_INCREMENT,
 	`data_inicio` DATE NOT NULL,
@@ -22,8 +23,8 @@ CREATE TABLE `Produtos` (
 	`nome` varchar(255) NOT NULL,
 	`descricao` varchar(255) NOT NULL,
 	`img_url` varchar(255) NOT NULL,
-	`preco` DECIMAL(255) NOT NULL,
-	`preco_old` DECIMAL(255) NOT NULL,
+	`preco_in_cents` INT NOT NULL,
+	`preco_old_in_cents` INT NOT NULL,
 	PRIMARY KEY (`id`)
 );
 
@@ -41,6 +42,9 @@ ALTER TABLE `Pedidos` ADD CONSTRAINT `Pedidos_fk0` FOREIGN KEY (`contato_id`) RE
 ALTER TABLE `Pedidos_Contato` ADD CONSTRAINT `Pedidos_Contato_fk0` FOREIGN KEY (`pedido_id`) REFERENCES `Pedidos`(`id`);
 
 ALTER TABLE `Pedidos_Contato` ADD CONSTRAINT `Pedidos_Contato_fk1` FOREIGN KEY (`produto_id`) REFERENCES `Produtos`(`id`);
+
+
+
 
 
 
