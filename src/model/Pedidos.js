@@ -4,19 +4,22 @@ const { INTEGER, DATE } = require('sequelize');
 const Pedidos = db.sequelize.define(
   'Pedidos',
   {
-    data_inicio: {
+    dataInicio: {
       type: DATE,
       required: true,
+      field: 'data_inicio'
     },
-    data_fim: {
+    dataFim: {
       type: DATE,
       required: true,
+      field: 'data_fim'
     },
     status: {
       type: INTEGER,
       required: true,
     },
-    contato_id: {
+    contatoId: {
+      field: 'contato_id',
       type: INTEGER,
       required: true,
     },

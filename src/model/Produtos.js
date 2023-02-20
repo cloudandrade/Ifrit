@@ -12,15 +12,18 @@ const Produtos = db.sequelize.define(
       type: INTEGER,
       required: true,
     },
-    img_url: {
+    imgUrl: {
+      field: 'img_url',
       type: INTEGER,
       required: true,
     },
     preco_in_cents: {
+      field: 'preco_in_cents',
       type: INTEGER,
       required: true,
     },
     preco_old_in_cents: {
+      field: 'preco_old_in_cents',
       type: INTEGER,
       required: true,
     },

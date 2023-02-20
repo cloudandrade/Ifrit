@@ -12,11 +12,13 @@ const PedidosContato = db.sequelize.define(
       type: STRING,
       required: true,
     },
-    produto_id: {
+    produtoId: {
+      field: 'produto_id',
       type: INTEGER,
       required: true,
     },
-    pedido_id: {
+    pedidoId: {
+      field: 'pedido_id',
       type: INTEGER,
       required: true,
     },
@@ -25,7 +27,7 @@ const PedidosContato = db.sequelize.define(
     freezeTableName: true,
     timestamps: false,
     modelName: 'PedidosContato',
-    tableName: 'PedidosContato',
+    tableName: 'Pedidos_Contato',
   }
 );
 

@@ -13,3 +13,23 @@ content-type: application/json
 ### Obter Lista de Produtos paginada
 GET http://localhost:8000/produtos?page=0&size=5&search=1 HTTP/1.1
 content-type: application/json
+
+### Realizar pedidos
+POST http://localhost:8000/pedidos HTTP/1.1
+content-type: application/json
+
+{
+    "contatoId": 2,
+    "pedidos":[
+        {
+            "quantidade": 2,
+            "tamanho": "G",
+            "produtoId": 2
+        },
+        {
+            "quantidade": 5,
+            "tamanho": "P",
+            "produtoId": 10
+        }
+    ]
+}
